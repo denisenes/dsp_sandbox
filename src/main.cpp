@@ -12,12 +12,13 @@
 #include "Adder.h"
 #include "Oscillator.h"
 #include "Utils.h"
+#include "NoiseGenerator.h"
 
 void setup() {
-	Oscillator& osc1 = *new Oscillator(SAW, 0.001f);
-	Oscillator& osc2 = *new Oscillator(SIN, 0.008f);
+	Oscillator& osc1 = *new Oscillator(SAW, 0.002f);
+	NoiseGenerator& ng = *new NoiseGenerator();
 
-	Adder& adder = *new Adder(osc1, osc2);
+	Adder& adder = *new Adder(osc1, ng);
 
 	Jack::instance.setInput(&adder);
 }

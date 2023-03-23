@@ -14,7 +14,7 @@ class Utils {
 
         static void calcFreqs(sample_t srate) { 
 	        for(int i = 0; i < FREQS_NUM; i++) {
-	        	frequencies[i] = (2.0 * 440.0 / 32.0) * pow(2, (((sample_t) i - 9.0) / 12.0)) / srate;
+	        	frequencies[i] = 440.0f / 32.0f * pow(2, (((sample_t) i - 9.0f) / 12.0f)) / srate;
 	        }
         }
 

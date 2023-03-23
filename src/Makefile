@@ -1,7 +1,7 @@
 all : main.o Jack.o Oscillator.o Utils.o Wavetable.o
 	g++ -o main main.o Jack.o Oscillator.o Utils.o Wavetable.o -lstdc++ -lm `pkg-config --cflags --libs jack`
 
-main.o : main.cpp Jack.h Adder.h Oscillator.h Utils.h
+main.o : main.cpp Jack.h Adder.h Oscillator.h Utils.h NoiseGenerator.h
 	g++ -g -c main.cpp
 
 Jack.o : Jack.cpp Jack.h Utils.h
