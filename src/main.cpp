@@ -13,14 +13,13 @@
 #include "Oscillator.h"
 #include "Utils.h"
 #include "NoiseGenerator.h"
+#include "MidiSignalBlock.h"
 
 void setup() {
-	Oscillator& osc1 = *new Oscillator(SAW, 0.002f);
 	NoiseGenerator& ng = *new NoiseGenerator();
+	Oscillator& osc1 = *new Oscillator(SAW, ng, 0.002f);
 
-	Adder& adder = *new Adder(osc1, ng);
-
-	Jack::instance.setInput(&adder);
+	Jack::instance.setInput(&osc1);
 }
 
 int main(int narg, char **args) {

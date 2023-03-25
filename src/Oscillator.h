@@ -1,7 +1,7 @@
-#ifndef OSCILLATOR_H
-#define OSCILLATOR_H
+#pragma once
 
 #include "ProcessingBlock.h"
+#include "ControlSignalBlock.h"
 #include "Jack.h"
 #include "GlobalDecls.h"
 #include "Wavetable.h"
@@ -10,10 +10,10 @@
 
 class Oscillator : public ProcessingBlock {
     public:
-        Oscillator(Waveform w, sample_t detune) : ProcessingBlock(*this), 
-            voice1(w, DEFAULT_OSC_TABLE_LENGTH),
-            voice2(w, DEFAULT_OSC_TABLE_LENGTH),
-            detuneParam(detune) {
+        Oscillator(Waveform w, ControlSignalBlock& freqInput, sample_t detune) : 
+            ProcessingBlock(*this), 
+            voice1(w, DEFAULT_OSC_TABLE_LENGTH), voice2(w, DEFAULT_OSC_TABLE_LENGTH),
+            frequencyInput(freqInput), detuneParam(detune) {
                 assert(0.f <= detune && detune <= 1.f);
             } 
 
@@ -23,8 +23,8 @@ class Oscillator : public ProcessingBlock {
 
         sample_t detuneParam;
 
+        ControlSignalBlock& frequencyInput;
+
     protected:
         float process();
 };
-
-#endif

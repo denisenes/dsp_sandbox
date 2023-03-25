@@ -7,13 +7,13 @@ class ProcessingBlock {
     public:
         ProcessingBlock(ProcessingBlock& in) : input(in) {}
 
-        float out() {
+        sample_t out() {
             return process();
         }
 
     protected:
         ProcessingBlock& input;
-        virtual sample_t process() { return 0.0f; };
+        virtual sample_t process() { return 0.f; };
 };
 
 #endif

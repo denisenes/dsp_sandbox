@@ -33,13 +33,19 @@ class Jack {
             return output_port;
         }
 
+        sample_t isMidiNoteOn() {
+            return note_on;
+        }
+
+        unsigned char currentMidiNote() {
+            return note;
+        }
+
         void portRegister(const char * portName, const char * portType, unsigned long flags, unsigned long bufferSize);
 
         void activate();
 
         void close();
-
-        sample_t getInputFrequency();
 
     private:
         jack_client_t* client;

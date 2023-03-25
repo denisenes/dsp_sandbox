@@ -1,5 +1,6 @@
 #include "ProcessingBlock.h"
 #include "Jack.h"
+#include "GlobalDecls.h"
 
 class Adder : public ProcessingBlock {
     public:
@@ -10,7 +11,7 @@ class Adder : public ProcessingBlock {
         ProcessingBlock& input2;
 
     protected:
-        float process() {
+        sample_t process() {
             return (input.out() + input2.out()) / 2.f;
         }
 };

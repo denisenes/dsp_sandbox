@@ -91,16 +91,8 @@ int Jack::process(jack_nframes_t nframes, void* arg) {
 			}
 		}
 
-        if (Jack::note_on) {
-            out[i] = Jack::instance.input->out();
-        } else {
-            out[i] = 0.f;
-        }
+        out[i] = Jack::instance.input->out();
     }
 
     return 0;
-}
-
-sample_t Jack::getInputFrequency() {
-    return Utils::noteToFreq(note);
 }
