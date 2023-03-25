@@ -14,12 +14,19 @@
 #include "Utils.h"
 #include "NoiseGenerator.h"
 #include "MidiSignalBlock.h"
+#include "StepSequencer.h"
 
 void setup() {
 	NoiseGenerator& ng = *new NoiseGenerator();
-	Oscillator& osc1 = *new Oscillator(SAW, ng, 0.002f);
+	StepSequencer& seq = *new StepSequencer(ng, 0.25f);
+	MidiSignalBlock& midiBlock = *new MidiSignalBlock();
+	
+	Oscillator& osc1 = *new Oscillator(SAW, seq, 0.002f);
+	Oscillator& osc2 = *new Oscillator(SIN, midiBlock, 0.005f);
 
-	Jack::instance.setInput(&osc1);
+	Adder& adder = *new Adder(osc1, osc2);
+
+	Jack::instance.setInput(&adder);
 }
 
 int main(int narg, char **args) {

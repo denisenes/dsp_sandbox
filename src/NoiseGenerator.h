@@ -5,6 +5,8 @@
 #include "Jack.h"
 #include <cstdlib>
 
+#define MAX_GENERATED_NOTE 128;
+
 class NoiseGenerator : public ProcessingBlock, public ControlSignalBlock {
     public:
         NoiseGenerator() : ProcessingBlock(*this) {}
@@ -16,8 +18,8 @@ class NoiseGenerator : public ProcessingBlock, public ControlSignalBlock {
         }
 
         sample_t generate() {
-            float randVal = static_cast<float>(std::rand());
-            printf("%f\n", std::fmod(randVal, Jack::instance.getSampleRate() / 2.f));
-            return std::fmod(randVal, Jack::instance.getSampleRate() / 2.f);
+            int note = std::rand() % MAX_GENERATED_NOTE;
+            //printf("%f\n", std::fmod(randVal, Jack::instance.getSampleRate() / 2.f));
+            return Utils::noteToFreq(note);
         }
 };

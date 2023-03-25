@@ -1,5 +1,6 @@
 #include "Jack.h"
 #include "Utils.h"
+#include "GlobalClock.h"
 #include <iostream>
 
 Jack Jack::instance("bebra");
@@ -92,6 +93,7 @@ int Jack::process(jack_nframes_t nframes, void* arg) {
 		}
 
         out[i] = Jack::instance.input->out();
+        GlobalClock::tick();
     }
 
     return 0;

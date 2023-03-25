@@ -1,5 +1,5 @@
-all : main.o Jack.o Oscillator.o Utils.o Wavetable.o
-	g++ -o main main.o Jack.o Oscillator.o Utils.o Wavetable.o -lstdc++ -lm `pkg-config --cflags --libs jack`
+all : main.o Jack.o Oscillator.o Utils.o Wavetable.o StepSequencer.o GlobalClock.o
+	g++ -o main main.o Jack.o Oscillator.o Utils.o Wavetable.o StepSequencer.o GlobalClock.o -lstdc++ -lm `pkg-config --cflags --libs jack`
 
 main.o : main.cpp Jack.h Adder.h Oscillator.h Utils.h NoiseGenerator.h
 	g++ -g -c main.cpp
@@ -15,6 +15,12 @@ Utils.o : Utils.cpp Utils.h
 
 Wavetable.o : Wavetable.cpp Wavetable.h Utils.h Jack.h
 	g++ -g -c Wavetable.cpp
+
+StepSequencer.o : Jack.cpp Jack.h ControlSignalBlock.h GlobalDecls.h
+	g++ -g -c StepSequencer.cpp
+
+GlobalClock.o : GlobalDecls.h
+	g++ -g -c GlobalClock.cpp
 
 clean:
 	rm *.o
