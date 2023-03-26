@@ -5,6 +5,9 @@
 #include "Jack.h"
 #include "Wavetable.h"
 
+#define HARMONICS_NUMBER 75 // TODO compute
+// #define USE_BANDLIMITED_WAVES
+
 void Wavetable::initTable(Waveform waveform) {
     switch (waveform) {
         // TODO implement
@@ -34,19 +37,48 @@ inline void Wavetable::initSin() {
 }
 
 inline void Wavetable::initSqr() {
-    int bound = tableLength;
+    #ifdef USE_BANDLIMITED_WAVES
+        sample_t bound = static_cast<sample_t>(tableLength);
+        sample_t normCoef = 4.f / M_PI;
 
-    for (int i = 0; i < bound; i++) {
-        table[i] = i < bound /2 ? 0 : 1;
-    }
+        for (int t = 0; t < bound; t++) {
+            for (sample_t k = 1.f; k <= HARMONICS_NUMBER; k += 1.f) {
+                sample_t denom = 2 * k - 1;
+                sample_t num   = sin(2 * M_PI * denom * t / bound);
+                table[t] += num / denom;
+            }
+            table[t] *= normCoef;
+        }
+    #else
+        int bound = tableLength;
+
+        for (int i = 0; i < bound; i++) {
+            table[i] = i < bound /2 ? 0 : 1;
+        }
+    #endif
 }
 
 inline void Wavetable::initSaw() {
-    int bound = tableLength;
+    #ifdef USE_BANDLIMITED_WAVES
+        sample_t bound = static_cast<sample_t>(tableLength);
+        sample_t ampl = 1.f;
+        sample_t normCoef = 2.f * ampl / M_PI;
+        
+        
+        for (int t = 0; t < bound; t++) {
+            for (sample_t k = 1.f; k <= HARMONICS_NUMBER; k += 1.f) {
+                sample_t coeff = fmod(k, 2) <= 0.5f ? 1 : -1;
+                table[t] += coeff * sin(2 * M_PI * k * t / bound) / (sample_t) k;
+            }
+            table[t] *= normCoef;
+        }
+    #else
+        int bound = tableLength;
 
-    for (int i = 0; i < bound; i++) {
-        table[i] = -(1.0f / bound) * i + 1.0f;
-    }
+        for (int i = 0; i < bound; i++) {
+            table[i] = -(1.0f / bound) * i + 1.0f;
+        }
+    #endif
 }
 
 inline void Wavetable::initTri() {

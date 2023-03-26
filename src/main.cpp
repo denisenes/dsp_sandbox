@@ -17,16 +17,20 @@
 #include "StepSequencer.h"
 
 void setup() {
-	NoiseGenerator& ng = *new NoiseGenerator();
-	StepSequencer& seq = *new StepSequencer(ng, 0.25f);
+	//NoiseGenerator& ng = *new NoiseGenerator();
+	//StepSequencer& seq = *new StepSequencer(ng, 0.2f);
+
+	//NoiseGenerator& ng2 = *new NoiseGenerator();
+	//StepSequencer& seq2 = *new StepSequencer(ng2, 0.333f);
+
 	MidiSignalBlock& midiBlock = *new MidiSignalBlock();
 	
-	Oscillator& osc1 = *new Oscillator(SAW, seq, 0.002f);
-	Oscillator& osc2 = *new Oscillator(SIN, midiBlock, 0.005f);
+	//Oscillator& osc1 = *new Oscillator(SAW, seq, 0.002f);
+	Oscillator& osc2 = *new Oscillator(SQR, midiBlock, 0.005f);
 
-	Adder& adder = *new Adder(osc1, osc2);
+	//Adder& adder = *new Adder(osc1, osc2);
 
-	Jack::instance.setInput(&adder);
+	Jack::instance.setInput(&osc2);
 }
 
 int main(int narg, char **args) {
