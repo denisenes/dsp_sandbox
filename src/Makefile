@@ -1,26 +1,63 @@
-all : main.o Jack.o Oscillator.o Utils.o Wavetable.o StepSequencer.o GlobalClock.o
-	g++ -o main main.o Jack.o Oscillator.o Utils.o Wavetable.o StepSequencer.o GlobalClock.o -lstdc++ -lm `pkg-config --cflags --libs jack`
+# apt-get install libsdl2-dev
 
-main.o : main.cpp Jack.h Adder.h Oscillator.h Utils.h NoiseGenerator.h
-	g++ -g -c main.cpp
+#CXX = g++
+#CXX = clang++
 
-Jack.o : Jack.cpp Jack.h Utils.h
-	g++ -g -c Jack.cpp
+EXE = sample
+IMGUI_DIR = ../libs/imgui/
+IMNODES_DIR = ../libs/ImNodes/
 
-Oscillator.o : Oscillator.cpp Oscillator.h Utils.h
-	g++ -g -c Oscillator.cpp
+# Application sources
+SOURCES = main.cpp
+SOURCES += gui/GUI.cpp
 
-Utils.o : Utils.cpp Utils.h
-	g++ -g -c Utils.cpp
+# ImGui sources
+SOURCES += $(IMGUI_DIR)/imgui.cpp  $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
+SOURCES += $(IMGUI_DIR)/backends/imgui_impl_sdl2.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
 
-Wavetable.o : Wavetable.cpp Wavetable.h Utils.h Jack.h
-	g++ -g -c Wavetable.cpp
+# ImNodes sources
+SOURCES += $(IMNODES_DIR)/ImNodes.cpp $(IMNODES_DIR)/ImNodesEz.cpp
 
-StepSequencer.o : Jack.cpp Jack.h ControlSignalBlock.h GlobalDecls.h
-	g++ -g -c StepSequencer.cpp
+OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
+UNAME_S := $(shell uname -s)
+LINUX_GL_LIBS = -lGL
 
-GlobalClock.o : GlobalDecls.h
-	g++ -g -c GlobalClock.cpp
+CXXFLAGS = -std=c++11 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(IMNODES_DIR) -Igui
+CXXFLAGS += -g -Wall -Wformat
+LIBS =
+
+ifeq ($(UNAME_S), Linux) #LINUX
+	ECHO_MESSAGE = "Linux"
+	LIBS += $(LINUX_GL_LIBS) -ldl `sdl2-config --libs`
+
+	CXXFLAGS += `sdl2-config --cflags`
+	CFLAGS = $(CXXFLAGS)
+endif
+
+##---------------------------------------------------------------------
+## BUILD RULES
+##---------------------------------------------------------------------
+
+%.o:%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:gui/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:$(IMNODES_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:$(IMGUI_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:$(IMGUI_DIR)/backends/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+all: $(EXE)
+	@echo Build complete for $(ECHO_MESSAGE)
+
+$(EXE): $(OBJS)
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIBS)
 
 clean:
-	rm *.o
+	rm -f $(EXE) $(OBJS)
