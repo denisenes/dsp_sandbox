@@ -3,7 +3,7 @@
 #CXX = g++
 #CXX = clang++
 
-EXE = sample
+EXE = main
 IMGUI_DIR = ../libs/imgui/
 IMNODES_DIR = ../libs/ImNodes/
 
@@ -60,4 +60,4 @@ $(EXE): $(OBJS)
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIBS)
 
 clean:
-	rm -f $(EXE) $(OBJS)
+	rm -f $(OBJS) imgui.ini

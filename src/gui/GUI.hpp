@@ -93,5 +93,5 @@ struct MyNode
 };
 
 namespace ImGui {
-    void ShowMainWindow(bool*);
+    void ShowMainWindow();
 }

@@ -15,7 +15,7 @@ std::vector<MyNode*> nodes;
 
 namespace ImGui {
 
-void ShowMainWindow(bool*) {
+void ShowMainWindow() {
     // Canvas must be created after ImGui initializes, because constructor accesses ImGui style to configure default colors.
     static ImNodes::Ez::Context* context = ImNodes::Ez::CreateContext();
     IM_UNUSED(context);
