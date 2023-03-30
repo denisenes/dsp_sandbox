@@ -36,7 +36,7 @@ ifeq ($(UNAME_S), Linux) #LINUX
 	ECHO_MESSAGE = "Linux"
 	LIBS += $(LINUX_GL_LIBS) -ldl `sdl2-config --libs` -lm
 
-	CXXFLAGS += `sdl2-config --cflags` `pkg-config --cflags --libs jack`
+	CXXFLAGS += -O3 `sdl2-config --cflags` `pkg-config --cflags --libs jack`
 	CFLAGS = $(CXXFLAGS)
 endif
 

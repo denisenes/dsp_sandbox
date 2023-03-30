@@ -9,7 +9,7 @@
 
 class NoiseGenerator : public ProcessingBlock, public ControlSignalBlock {
     public:
-        NoiseGenerator() : ProcessingBlock(*this) {}
+        NoiseGenerator() : ProcessingBlock() {}
 
     protected:
         sample_t process() {

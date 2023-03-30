@@ -1,19 +1,22 @@
-#ifndef PROC_BLOCK_H
-#define PROC_BLOCK_H
+#pragma once
 
 #include "GlobalDecls.h"
+#include <vector>
+
+#define IN_1 0
+#define IN_2 1
+
+#define MAX_INPUTS 2
 
 class ProcessingBlock {
     public:
-        ProcessingBlock(ProcessingBlock& in) : input(in) {}
+        ProcessingBlock() : inputs(MAX_INPUTS) {}
 
         sample_t out() {
             return process();
         }
 
     protected:
-        ProcessingBlock& input;
+        std::vector<ProcessingBlock*> inputs;
         virtual sample_t process() { return 0.f; };
 };
-
-#endif

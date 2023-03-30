@@ -82,11 +82,11 @@ inline void Wavetable::initSaw() {
 }
 
 inline void Wavetable::initTri() {
-    int bound = tableLength;
+    sample_t bound = static_cast<sample_t>(tableLength);
 
     for (int i = 0; i < bound; i++) {
-        int b = floorf(i / bound + 0.5f);
-        table[i] = 2 * fabsf(i / bound - b);
+        sample_t b = floorf(i / bound + 0.5f);
+        table[i] = (2.f * fabsf(i / bound - b) - 0.5f) *2.f;
     }
 }
 
@@ -95,9 +95,7 @@ inline void Wavetable::initTri() {
 
     readPtr += tableLength * frequency;
 
-    while (readPtr >= tableLength) {
-        readPtr -= tableLength;
-    }
+    readPtr = fmod(readPtr, tableLength);
 
     sample_t x = readPtr; 
     sample_t x0 = floor(readPtr);
@@ -105,7 +103,7 @@ inline void Wavetable::initTri() {
     sample_t y0 = table[static_cast<int>(x0)];
     sample_t y1 = table[static_cast<int>(x1)];
 
-    sample_t y = Utils::linearInterpolation(x, x0, y0, x1, y1);
+    sample_t y = Utils::linearInterpolation(readPtr, x0, y0, x1, y1);
 
     return y;
 }

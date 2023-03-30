@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
-    #define IMGUI_DEFINE_MATH_OPERATORS
+#define IMGUI_DEFINE_MATH_OPERATORS
 #endif
 
 #include <vector>
@@ -14,76 +14,64 @@
 #include <stdio.h>
 
 /// A structure defining a connection between two slots of two nodes.
-struct Connection
-{
-    /// `id` that was passed to BeginNode() of input node.
-    void* InputNode = nullptr;
-    /// Descriptor of input slot.
-    const char* InputSlot = nullptr;
-    /// `id` that was passed to BeginNode() of output node.
-    void* OutputNode = nullptr;
-    /// Descriptor of output slot.
-    const char* OutputSlot = nullptr;
+struct Connection {
+    void *inputNode = nullptr;
 
-    bool operator==(const Connection& other) const
-    {
-        return InputNode == other.InputNode &&
-               InputSlot == other.InputSlot &&
-               OutputNode == other.OutputNode &&
-               OutputSlot == other.OutputSlot;
-    }
+    const char *inputSlot = nullptr;
 
-    bool operator!=(const Connection& other) const
+    void *outputNode = nullptr;
+
+    const char *outputSlot = nullptr;
+
+    bool operator==(const Connection &other) const;
+    
+    bool operator!=(const Connection &other) const
     {
-        return !operator ==(other);
+        return !operator==(other);
     }
 };
 
 enum NodeSlotTypes
 {
-    ProcessingSignal = 1,   // ID can not be 0
+    ProcessingSignal = 1,
     ControlSignal
 };
 
-/// A structure holding node state.
-struct MyNode
+struct GUI_Node
 {
-    /// Title which will be displayed at the center-top of the node.
-    const char* Title = nullptr;
-    /// Flag indicating that node is selected by the user.
-    bool Selected = false;
-    /// Node position on the canvas.
-    ImVec2 Pos{};
-    /// List of node connections.
-    std::vector<Connection> Connections{};
-    /// A list of input slots current node has.
-    std::vector<ImNodes::Ez::SlotInfo> InputSlots{};
-    /// A list of output slots current node has.
-    std::vector<ImNodes::Ez::SlotInfo> OutputSlots{};
+    const char *title = nullptr;
+    bool selected = false;
 
-    explicit MyNode(const char* title,
-        const std::vector<ImNodes::Ez::SlotInfo>&& input_slots,
-        const std::vector<ImNodes::Ez::SlotInfo>&& output_slots)
+    ImVec2 position{};
+
+    std::vector<Connection> connections{};
+
+    std::vector<ImNodes::Ez::SlotInfo> inputSlots{};
+    std::vector<ImNodes::Ez::SlotInfo> outputSlots{};
+
+    explicit GUI_Node(const char *title,
+                      const std::vector<ImNodes::Ez::SlotInfo> &&input_slots,
+                      const std::vector<ImNodes::Ez::SlotInfo> &&output_slots)
     {
-        Title = title;
-        InputSlots = input_slots;
-        OutputSlots = output_slots;
+        title = title;
+        inputSlots = input_slots;
+        outputSlots = output_slots;
     }
 
-    /// Deletes connection from this node.
-    void DeleteConnection(const Connection& connection)
+    void DeleteConnection(const Connection &connection)
     {
-        for (auto it = Connections.begin(); it != Connections.end(); ++it)
+        for (auto it = connections.begin(); it != connections.end(); ++it)
         {
             if (connection == *it)
             {
-                Connections.erase(it);
+                connections.erase(it);
                 break;
             }
         }
     }
 };
 
-namespace ImGui {
+namespace ImGui
+{
     void ShowMainWindow();
 }

@@ -1,22 +1,28 @@
 #include "GUI.hpp"
 
-std::map<std::string, MyNode*(*)()> available_nodes {
-    {"Oscillator", []() -> MyNode* { return new MyNode("Oscillator", {}, {
+std::map<std::string, GUI_Node*(*)()> available_nodes {
+    {"Oscillator", []() -> GUI_Node* { return new GUI_Node("Oscillator", {}, {
         {"out", ProcessingSignal}
     }); }},
-    {"Adder", []() -> MyNode* { return new MyNode("Adder", {
+    {"Adder", []() -> GUI_Node* { return new GUI_Node("Adder", {
         {"in1", ProcessingSignal}, {"in2", ProcessingSignal}                                       // Input slots
     }, {
         {"out", ProcessingSignal}
     }); }},
-    {"Output", []() -> MyNode* { return new MyNode("Output", {{"in", ProcessingSignal}}, {}); }},
+    {"Output", []() -> GUI_Node* { return new GUI_Node("Output", {{"in", ProcessingSignal}}, {}); }},
 };
-std::vector<MyNode*> nodes;
+std::vector<GUI_Node*> nodes;
+
+bool Connection::operator==(const Connection &other) const {
+    return inputNode == other.inputNode &&
+            inputSlot == other.inputSlot &&
+            outputNode == other.outputNode &&
+            outputSlot == other.outputSlot;
+}
 
 namespace ImGui {
 
 void ShowMainWindow() {
-    // Canvas must be created after ImGui initializes, because constructor accesses ImGui style to configure default colors.
     static ImNodes::Ez::Context* context = ImNodes::Ez::CreateContext();
     IM_UNUSED(context);
 
@@ -32,62 +38,60 @@ void ShowMainWindow() {
         ImGui::SetWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y));
         ImGui::SetWindowPos(ImVec2(0.f, 0.f));
 
-        // We probably need to keep some state, like positions of nodes/slots for rendering connections.
         ImNodes::Ez::BeginCanvas();
         for (auto it = nodes.begin(); it != nodes.end();) {
-            MyNode* node = *it;
+            GUI_Node* node = *it;
 
             // Start rendering node
-            if (ImNodes::Ez::BeginNode(node, node->Title, &node->Pos, &node->Selected)) {
+            if (ImNodes::Ez::BeginNode(node, node->title, &node->position, &node->selected)) {
                 // Render input nodes first (order is important)
-                ImNodes::Ez::InputSlots(node->InputSlots.data(), node->InputSlots.size());
+                ImNodes::Ez::InputSlots(node->inputSlots.data(), node->inputSlots.size());
 
                 // Custom node content may go here
-                ImGui::Text("Content of %s", node->Title);
+                //ImGui::Text("Content of %s", node->title);
 
                 // Render output nodes first (order is important)
-                ImNodes::Ez::OutputSlots(node->OutputSlots.data(), node->OutputSlots.size());
+                ImNodes::Ez::OutputSlots(node->outputSlots.data(), node->outputSlots.size());
 
                 // Store new connections when they are created
                 Connection new_connection;
-                if (ImNodes::GetNewConnection(&new_connection.InputNode, &new_connection.InputSlot,
-                                              &new_connection.OutputNode, &new_connection.OutputSlot))
+                if (ImNodes::GetNewConnection(&new_connection.inputNode, &new_connection.inputSlot,
+                                              &new_connection.outputNode, &new_connection.outputSlot))
                 {
-                    ((MyNode*) new_connection.InputNode)->Connections.push_back(new_connection);
-                    ((MyNode*) new_connection.OutputNode)->Connections.push_back(new_connection);
+                    ((GUI_Node*) new_connection.inputNode)->connections.push_back(new_connection);
+                    ((GUI_Node*) new_connection.outputNode)->connections.push_back(new_connection);
                 }
 
                 // Render output connections of this node
-                for (const Connection& connection : node->Connections) {
+                for (const Connection& connection : node->connections) {
                     // Node contains all it's connections (both from output and to input slots). This means that multiple
                     // nodes will have same connection. We render only output connections and ensure that each connection
                     // will be rendered once.
-                    if (connection.OutputNode != node) {
+                    if (connection.outputNode != node) {
                         continue;
                     }
 
-                    if (!ImNodes::Connection(connection.InputNode, connection.InputSlot, connection.OutputNode,
-                                             connection.OutputSlot)) {
+                    if (!ImNodes::Connection(connection.inputNode, connection.inputSlot, connection.outputNode,
+                                             connection.outputSlot)) {
                         // Remove deleted connections
-                        ((MyNode*) connection.InputNode)->DeleteConnection(connection);
-                        ((MyNode*) connection.OutputNode)->DeleteConnection(connection);
+                        ((GUI_Node*) connection.inputNode)->DeleteConnection(connection);
+                        ((GUI_Node*) connection.outputNode)->DeleteConnection(connection);
                     }
                 }
             }
-            // Node rendering is done. This call will render node background based on size of content inside node.
+            
             ImNodes::Ez::EndNode();
 
-            if (node->Selected && ImGui::IsKeyPressedMap(ImGuiKey_Delete) && ImGui::IsWindowFocused()) {
+            if (node->selected && ImGui::IsKeyPressedMap(ImGuiKey_Delete) && ImGui::IsWindowFocused()) {
                 // Deletion order is critical: first we delete connections to us
-                for (auto& connection : node->Connections) {
-                    if (connection.OutputNode == node) {
-                        ((MyNode*) connection.InputNode)->DeleteConnection(connection);
+                for (auto& connection : node->connections) {
+                    if (connection.outputNode == node) {
+                        ((GUI_Node*) connection.inputNode)->DeleteConnection(connection);
                     } else {
-                        ((MyNode*) connection.OutputNode)->DeleteConnection(connection);
+                        ((GUI_Node*) connection.outputNode)->DeleteConnection(connection);
                     }
                 }
-                // Then we delete our own connections, so we don't corrupt the list
-                node->Connections.clear();
+                node->connections.clear();
                 
                 delete node;
                 it = nodes.erase(it);

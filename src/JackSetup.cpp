@@ -10,7 +10,7 @@ void setup() {
 	MidiSignalBlock& midiBlock = *new MidiSignalBlock();
 	
 	//Oscillator& osc1 = *new Oscillator(SAW, seq, 0.002f);
-	Oscillator& osc2 = *new Oscillator(SQR, midiBlock, 0.005f);
+	Oscillator& osc2 = *new Oscillator(SAW, midiBlock, 0.0f);
 
 	//Adder& adder = *new Adder(osc1, osc2);
 

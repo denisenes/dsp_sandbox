@@ -5,13 +5,13 @@
 class Adder : public ProcessingBlock {
     public:
         Adder(ProcessingBlock& in1, ProcessingBlock& in2)
-         : ProcessingBlock(in1), input2(in2) {}
-
-    private:
-        ProcessingBlock& input2;
+         : ProcessingBlock() {
+            inputs.push_back(&in1);
+            inputs.push_back(&in2);
+         }
 
     protected:
         sample_t process() {
-            return (input.out() + input2.out()) / 2.f;
+            return (inputs[IN_1]->out() + inputs[IN_2]->out()) / 2.f;
         }
 };
