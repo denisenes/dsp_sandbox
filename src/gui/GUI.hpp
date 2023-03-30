@@ -11,15 +11,7 @@
 #include <imgui_internal.h>
 #include "ImNodesEz.h"
 
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_opengl3.h"
 #include <stdio.h>
-#include <SDL.h>
-#if defined(IMGUI_IMPL_OPENGL_ES2)
-#include <SDL_opengles2.h>
-#else
-#include <SDL_opengl.h>
-#endif
 
 /// A structure defining a connection between two slots of two nodes.
 struct Connection

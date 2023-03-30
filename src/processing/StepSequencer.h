@@ -8,9 +8,9 @@
 class StepSequencer : public ControlSignalBlock {
     public:
         StepSequencer(ControlSignalBlock& input, raw_time_t stepDuration) : 
-            sequenceInput(input), 
             stepStartTime(0ll), 
-            currentFrequency(0.f) 
+            currentFrequency(0.f), 
+            sequenceInput(input)
             {
                 sample_t sample_rate = static_cast<raw_time_t>(Jack::instance.getSampleRate());
                 this->stepDuration = static_cast<smp_time_t>(stepDuration * sample_rate);

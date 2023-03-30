@@ -1,20 +1,4 @@
-#include <stdio.h>
-#include <errno.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-
-#include <jack/jack.h>
-#include <jack/midiport.h>
-
-#include "Jack.h"
-#include "Adder.h"
-#include "Oscillator.h"
-#include "Utils.h"
-#include "NoiseGenerator.h"
-#include "MidiSignalBlock.h"
-#include "StepSequencer.h"
+#include "JackSetup.hpp"
 
 void setup() {
 	//NoiseGenerator& ng = *new NoiseGenerator();
@@ -33,8 +17,8 @@ void setup() {
 	Jack::instance.setInput(&osc2);
 }
 
-int main(int narg, char **args) {
-	printf("Start configuration\n");
+void jackSetup() {
+	printf("Start JACK configuration\n");
 	Utils::calcFreqs(Jack::instance.getSampleRate());
 
 	Jack::instance.portRegister("midi_in", JACK_DEFAULT_MIDI_TYPE, JackPortIsInput, 0);
@@ -42,12 +26,8 @@ int main(int narg, char **args) {
 
 	setup();
 	Jack::instance.activate();
+}
 
-	/* run until interrupted */
-	while(1) {
-		sleep(10);
-	}
-
+void jackOnTermination() {
 	Jack::instance.close();
-	return 0;
 }

@@ -1,5 +1,4 @@
-#ifndef JACK_H
-#define JACK_H
+#pragma once
 
 #include <jack/jack.h>
 #include <jack/midiport.h>
@@ -76,5 +75,3 @@ class Jack {
             jack_on_shutdown(client, callback, arg);
         }
 };
-
-#endif

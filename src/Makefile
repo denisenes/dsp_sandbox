@@ -8,7 +8,13 @@ IMGUI_DIR = ../libs/imgui/
 IMNODES_DIR = ../libs/ImNodes/
 
 # Application sources
-SOURCES = main.cpp
+SOURCES = main. JackSetup.cpp SDLSetup.cpp
+
+# Processing logic sources
+SOURCES += processing/GlobalClock.cpp processing/Jack.cpp processing/Oscillator.cpp processing/StepSequencer.cpp
+SOURCES += processing/Utils.cpp processing/Wavetable.cpp
+
+# GUI sources
 SOURCES += gui/GUI.cpp
 
 # ImGui sources
@@ -22,21 +28,24 @@ OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
-CXXFLAGS = -std=c++11 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(IMNODES_DIR) -Igui
+CXXFLAGS = -std=c++11 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(IMNODES_DIR) -Igui -Iprocessing
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
 
 ifeq ($(UNAME_S), Linux) #LINUX
 	ECHO_MESSAGE = "Linux"
-	LIBS += $(LINUX_GL_LIBS) -ldl `sdl2-config --libs`
+	LIBS += $(LINUX_GL_LIBS) -ldl `sdl2-config --libs` -lm
 
-	CXXFLAGS += `sdl2-config --cflags`
+	CXXFLAGS += `sdl2-config --cflags` `pkg-config --cflags --libs jack`
 	CFLAGS = $(CXXFLAGS)
 endif
 
 ##---------------------------------------------------------------------
 ## BUILD RULES
 ##---------------------------------------------------------------------
+
+%.o:processing/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<

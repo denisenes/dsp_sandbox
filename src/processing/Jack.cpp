@@ -68,7 +68,7 @@ int Jack::process(jack_nframes_t nframes, void* arg) {
 
     if(event_count > 1) {
 		printf(" midisine: have %d events\n", event_count);
-		for(int i = 0; i < event_count; i++) {
+		for(jack_nframes_t i = 0; i < event_count; i++) {
 			jack_midi_event_get(&in_event, port_buf, i);
 			printf("    event %d time is %d. 1st byte is 0x%x\n", i, in_event.time, *(in_event.buffer));
 		}
@@ -76,7 +76,7 @@ int Jack::process(jack_nframes_t nframes, void* arg) {
 
 	jack_midi_event_get(&in_event, port_buf, 0);
 
-    for (int i = 0; i < nframes; i++) {
+    for (jack_nframes_t i = 0; i < nframes; i++) {
         if((in_event.time == i) && (event_index < event_count)) {
 			if( ((*(in_event.buffer) & 0xf0)) == 0x90 ) {
 				Jack::note = *(in_event.buffer + 1);
@@ -92,7 +92,9 @@ int Jack::process(jack_nframes_t nframes, void* arg) {
 			}
 		}
 
-        out[i] = Jack::instance.input->out();
+        ProcessingBlock * in = instance.input;
+
+        out[i] = in == nullptr ? 0.f : in->out();
         GlobalClock::tick();
     }
 

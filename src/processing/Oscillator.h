@@ -13,7 +13,7 @@ class Oscillator : public ProcessingBlock {
         Oscillator(Waveform w, ControlSignalBlock& freqInput, sample_t detune) : 
             ProcessingBlock(*this), 
             voice1(w, DEFAULT_OSC_TABLE_LENGTH), voice2(w, DEFAULT_OSC_TABLE_LENGTH),
-            frequencyInput(freqInput), detuneParam(detune) {
+            detuneParam(detune), frequencyInput(freqInput) {
                 assert(0.f <= detune && detune <= 1.f);
             } 
 
