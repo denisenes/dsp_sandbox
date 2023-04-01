@@ -1,4 +1,5 @@
 #include "GUI.hpp"
+#include "JackNode.hpp"
 
 std::map<std::string, GUI_Node*(*)()> available_nodes {
     {"Oscillator", []() -> GUI_Node* { return new GUI_Node("Oscillator", {}, {
@@ -8,8 +9,7 @@ std::map<std::string, GUI_Node*(*)()> available_nodes {
         {"in1", ProcessingSignal}, {"in2", ProcessingSignal}                                       // Input slots
     }, {
         {"out", ProcessingSignal}
-    }); }},
-    {"Output", []() -> GUI_Node* { return new GUI_Node("Output", {{"in", ProcessingSignal}}, {}); }},
+    }); }}
 };
 std::vector<GUI_Node*> nodes;
 
@@ -42,40 +42,32 @@ void ShowMainWindow() {
         for (auto it = nodes.begin(); it != nodes.end();) {
             GUI_Node* node = *it;
 
-            // Start rendering node
             if (ImNodes::Ez::BeginNode(node, node->title, &node->position, &node->selected)) {
-                // Render input nodes first (order is important)
                 ImNodes::Ez::InputSlots(node->inputSlots.data(), node->inputSlots.size());
 
-                // Custom node content may go here
-                //ImGui::Text("Content of %s", node->title);
+                node->content();
 
-                // Render output nodes first (order is important)
                 ImNodes::Ez::OutputSlots(node->outputSlots.data(), node->outputSlots.size());
 
-                // Store new connections when they are created
+                // Connection creation
                 Connection new_connection;
                 if (ImNodes::GetNewConnection(&new_connection.inputNode, &new_connection.inputSlot,
                                               &new_connection.outputNode, &new_connection.outputSlot))
                 {
-                    ((GUI_Node*) new_connection.inputNode)->connections.push_back(new_connection);
-                    ((GUI_Node*) new_connection.outputNode)->connections.push_back(new_connection);
+                    ((GUI_Node*) new_connection.inputNode)->createConnection(new_connection);
+                    ((GUI_Node*) new_connection.outputNode)->createConnection(new_connection);
                 }
 
                 // Render output connections of this node
                 for (const Connection& connection : node->connections) {
-                    // Node contains all it's connections (both from output and to input slots). This means that multiple
-                    // nodes will have same connection. We render only output connections and ensure that each connection
-                    // will be rendered once.
                     if (connection.outputNode != node) {
                         continue;
                     }
 
                     if (!ImNodes::Connection(connection.inputNode, connection.inputSlot, connection.outputNode,
                                              connection.outputSlot)) {
-                        // Remove deleted connections
-                        ((GUI_Node*) connection.inputNode)->DeleteConnection(connection);
-                        ((GUI_Node*) connection.outputNode)->DeleteConnection(connection);
+                        ((GUI_Node*) connection.inputNode)->deleteConnection(connection);
+                        ((GUI_Node*) connection.outputNode)->deleteConnection(connection);
                     }
                 }
             }
@@ -86,9 +78,9 @@ void ShowMainWindow() {
                 // Deletion order is critical: first we delete connections to us
                 for (auto& connection : node->connections) {
                     if (connection.outputNode == node) {
-                        ((GUI_Node*) connection.inputNode)->DeleteConnection(connection);
+                        ((GUI_Node*) connection.inputNode)->deleteConnection(connection);
                     } else {
-                        ((GUI_Node*) connection.outputNode)->DeleteConnection(connection);
+                        ((GUI_Node*) connection.outputNode)->deleteConnection(connection);
                     }
                 }
                 node->connections.clear();
@@ -133,3 +125,33 @@ void ShowMainWindow() {
 }
 
 } // namespace ImGui
+
+void GUI_Node::deleteConnection(const Connection &connection) {
+    for (auto it = connections.begin(); it != connections.end(); ++it) {
+        if (connection == *it) {
+            connections.erase(it);
+            break;
+        }
+    }
+}
+
+void GUI_Node::createConnection(const Connection &new_connection) {
+    connections.push_back(new_connection);
+    setInput(new_connection);
+}
+
+void GUI_Node::setInput(const Connection& connection) {
+    // nop
+}
+
+void GUI_Node::content() {
+    ImGui::Text("%s", this->title);
+}
+
+ProcessingBlock* GUI_Node::getProcessingBlock() {
+    return nullptr;
+}
+
+ControlSignalBlock* GUI_Node::getControlSignalBlock() {
+    return nullptr;
+}

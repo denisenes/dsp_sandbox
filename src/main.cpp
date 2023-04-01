@@ -1,4 +1,5 @@
 #include "gui/GUI.hpp"
+#include "gui/JackNode.hpp"
 #include "JackSetup.hpp"
 #include "SDLSetup.hpp"
 
@@ -23,6 +24,7 @@ int main(int, char**) {
 
     // Setup Jack client
     jackSetup();
+    nodes.push_back(new JackNode());
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 

@@ -11,7 +11,11 @@
 #include <imgui_internal.h>
 #include "ImNodesEz.h"
 
+#include "../processing/ProcessingBlock.h"
+#include "../processing/ControlSignalBlock.h"
+
 #include <stdio.h>
+#include <string>
 
 /// A structure defining a connection between two slots of two nodes.
 struct Connection {
@@ -37,9 +41,8 @@ enum NodeSlotTypes
     ControlSignal
 };
 
-struct GUI_Node
-{
-    const char *title = nullptr;
+struct GUI_Node {
+    const char * title;
     bool selected = false;
 
     ImVec2 position{};
@@ -49,29 +52,27 @@ struct GUI_Node
     std::vector<ImNodes::Ez::SlotInfo> inputSlots{};
     std::vector<ImNodes::Ez::SlotInfo> outputSlots{};
 
-    explicit GUI_Node(const char *title,
-                      const std::vector<ImNodes::Ez::SlotInfo> &&input_slots,
-                      const std::vector<ImNodes::Ez::SlotInfo> &&output_slots)
-    {
-        title = title;
+    GUI_Node(const char * title,
+                      const std::vector<ImNodes::Ez::SlotInfo>&& input_slots,
+                      const std::vector<ImNodes::Ez::SlotInfo>&& output_slots) :
+    title(title) {
         inputSlots = input_slots;
         outputSlots = output_slots;
     }
 
-    void DeleteConnection(const Connection &connection)
-    {
-        for (auto it = connections.begin(); it != connections.end(); ++it)
-        {
-            if (connection == *it)
-            {
-                connections.erase(it);
-                break;
-            }
-        }
-    }
+    void deleteConnection(const Connection& connection);
+    void createConnection(const Connection& new_connection);
+
+    virtual void setInput(const Connection& connection);
+    virtual void content();
+
+    virtual ProcessingBlock*    getProcessingBlock();
+    virtual ControlSignalBlock* getControlSignalBlock();
 };
 
 namespace ImGui
 {
     void ShowMainWindow();
 }
+
+extern std::vector<GUI_Node*> nodes;

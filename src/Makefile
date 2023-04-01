@@ -15,7 +15,7 @@ SOURCES += processing/GlobalClock.cpp processing/Jack.cpp processing/Oscillator.
 SOURCES += processing/Utils.cpp processing/Wavetable.cpp
 
 # GUI sources
-SOURCES += gui/GUI.cpp
+SOURCES += gui/GUI.cpp gui/JackNode.cpp
 
 # ImGui sources
 SOURCES += $(IMGUI_DIR)/imgui.cpp  $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
@@ -36,7 +36,7 @@ ifeq ($(UNAME_S), Linux) #LINUX
 	ECHO_MESSAGE = "Linux"
 	LIBS += $(LINUX_GL_LIBS) -ldl `sdl2-config --libs` -lm
 
-	CXXFLAGS += -O3 `sdl2-config --cflags` `pkg-config --cflags --libs jack`
+	CXXFLAGS += -ggdb `sdl2-config --cflags` `pkg-config --cflags --libs jack`
 	CFLAGS = $(CXXFLAGS)
 endif
 
