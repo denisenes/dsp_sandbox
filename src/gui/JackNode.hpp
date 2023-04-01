@@ -5,13 +5,14 @@
 
 class JackNode : public GUI_Node {
     public:
-        JackNode() : GUI_Node("Jack", {{"in", ProcessingSignal}}, {}), jack(Jack::instance) {};
+        JackNode();
+        ~JackNode() {};
 
         virtual void setInput(const Connection& connection);
         virtual void content();
 
-        virtual ProcessingBlock*    getProcessingBlock() { return GUI_Node::getProcessingBlock(); }
-        virtual ControlSignalBlock* getControlSignalBlock() { return GUI_Node::getControlSignalBlock(); }
+        ProcessingBlock*    getProcessingBlock() { return GUI_Node::getProcessingBlock(); }
+        ControlSignalBlock* getControlSignalBlock() { return GUI_Node::getControlSignalBlock(); }
     private:
         Jack& jack;
 };

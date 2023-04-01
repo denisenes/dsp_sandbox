@@ -17,19 +17,21 @@
 #include <stdio.h>
 #include <string>
 
+struct GUI_Node;
+
 /// A structure defining a connection between two slots of two nodes.
 struct Connection {
-    void *inputNode = nullptr;
+    GUI_Node* inputNode = nullptr;
 
-    const char *inputSlot = nullptr;
+    const char* inputSlot = nullptr;
 
-    void *outputNode = nullptr;
+    GUI_Node* outputNode = nullptr;
 
-    const char *outputSlot = nullptr;
+    const char* outputSlot = nullptr;
 
-    bool operator==(const Connection &other) const;
+    bool operator==(const Connection& other) const;
     
-    bool operator!=(const Connection &other) const
+    bool operator!=(const Connection& other) const
     {
         return !operator==(other);
     }
@@ -42,7 +44,7 @@ enum NodeSlotTypes
 };
 
 struct GUI_Node {
-    const char * title;
+    const char* title;
     bool selected = false;
 
     ImVec2 position{};
@@ -52,13 +54,15 @@ struct GUI_Node {
     std::vector<ImNodes::Ez::SlotInfo> inputSlots{};
     std::vector<ImNodes::Ez::SlotInfo> outputSlots{};
 
-    GUI_Node(const char * title,
+    GUI_Node(const char* title,
                       const std::vector<ImNodes::Ez::SlotInfo>&& input_slots,
                       const std::vector<ImNodes::Ez::SlotInfo>&& output_slots) :
     title(title) {
         inputSlots = input_slots;
         outputSlots = output_slots;
     }
+
+    virtual ~GUI_Node() {};
 
     void deleteConnection(const Connection& connection);
     void createConnection(const Connection& new_connection);

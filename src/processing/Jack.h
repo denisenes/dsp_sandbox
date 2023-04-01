@@ -6,6 +6,8 @@
 #include <assert.h>
 #include "ProcessingBlock.h"
 
+#include <stdio.h>
+
 class Jack {
     public:
         static Jack instance;
@@ -14,6 +16,7 @@ class Jack {
         Jack(const char* clientName, jack_options_t options, jack_status_t* status);
 
         void setInput(ProcessingBlock * pb) {
+            printf("TEST\n");
             input = pb;
         }
 

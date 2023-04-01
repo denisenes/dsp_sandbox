@@ -1,15 +1,15 @@
 #include "GUI.hpp"
+
+#include "OscNode.hpp"
 #include "JackNode.hpp"
 
 std::map<std::string, GUI_Node*(*)()> available_nodes {
-    {"Oscillator", []() -> GUI_Node* { return new GUI_Node("Oscillator", {}, {
-        {"out", ProcessingSignal}
-    }); }},
+    {"Oscillator", []() -> GUI_Node* { return new OscNode(); }},
     {"Adder", []() -> GUI_Node* { return new GUI_Node("Adder", {
         {"in1", ProcessingSignal}, {"in2", ProcessingSignal}                                       // Input slots
     }, {
         {"out", ProcessingSignal}
-    }); }}
+    }); }},
 };
 std::vector<GUI_Node*> nodes;
 
@@ -51,11 +51,13 @@ void ShowMainWindow() {
 
                 // Connection creation
                 Connection new_connection;
-                if (ImNodes::GetNewConnection(&new_connection.inputNode, &new_connection.inputSlot,
-                                              &new_connection.outputNode, &new_connection.outputSlot))
+                void** inNodePtr  = reinterpret_cast<void**>(&new_connection.inputNode);
+                void** outNodePtr = reinterpret_cast<void**>(&new_connection.outputNode);
+                if (ImNodes::GetNewConnection(inNodePtr, &new_connection.inputSlot,
+                                              outNodePtr, &new_connection.outputSlot))
                 {
-                    ((GUI_Node*) new_connection.inputNode)->createConnection(new_connection);
-                    ((GUI_Node*) new_connection.outputNode)->createConnection(new_connection);
+                    (new_connection.inputNode)->createConnection(new_connection);
+                    (new_connection.outputNode)->createConnection(new_connection);
                 }
 
                 // Render output connections of this node
@@ -98,10 +100,8 @@ void ShowMainWindow() {
         }
 
         if (ImGui::BeginPopup("NodesContextMenu")) {
-            for (const auto& desc : available_nodes)
-            {
-                if (ImGui::MenuItem(desc.first.c_str()))
-                {
+            for (const auto& desc : available_nodes) {
+                if (ImGui::MenuItem(desc.first.c_str())) {
                     nodes.push_back(desc.second());
                     ImNodes::AutoPositionNode(nodes.back());
                 }
@@ -137,7 +137,9 @@ void GUI_Node::deleteConnection(const Connection &connection) {
 
 void GUI_Node::createConnection(const Connection &new_connection) {
     connections.push_back(new_connection);
-    setInput(new_connection);
+    if (new_connection.inputNode == this) {
+        setInput(new_connection);
+    }
 }
 
 void GUI_Node::setInput(const Connection& connection) {

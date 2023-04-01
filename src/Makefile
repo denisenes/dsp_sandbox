@@ -15,7 +15,7 @@ SOURCES += processing/GlobalClock.cpp processing/Jack.cpp processing/Oscillator.
 SOURCES += processing/Utils.cpp processing/Wavetable.cpp
 
 # GUI sources
-SOURCES += gui/GUI.cpp gui/JackNode.cpp
+SOURCES += gui/GUI.cpp gui/JackNode.cpp gui/OscNode.cpp
 
 # ImGui sources
 SOURCES += $(IMGUI_DIR)/imgui.cpp  $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
