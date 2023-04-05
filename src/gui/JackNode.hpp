@@ -8,8 +8,9 @@ class JackNode : public GUI_Node {
         JackNode();
         ~JackNode() {};
 
-        virtual void setInput(const Connection& connection);
-        virtual void content();
+        void setInput(const Connection& connection);
+        void deleteInput(const Connection& connection);
+        void content();
 
         ProcessingBlock*    getProcessingBlock() { return GUI_Node::getProcessingBlock(); }
         ControlSignalBlock* getControlSignalBlock() { return GUI_Node::getControlSignalBlock(); }

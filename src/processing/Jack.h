@@ -49,6 +49,10 @@ class Jack {
 
         void close();
 
+        void assertInputBlock(const ProcessingBlock * pb) {
+            assert(pb == input);
+        }
+
     private:
         jack_client_t* client;
         ProcessingBlock * input;

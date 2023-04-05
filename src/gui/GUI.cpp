@@ -129,6 +129,7 @@ void ShowMainWindow() {
 void GUI_Node::deleteConnection(const Connection &connection) {
     for (auto it = connections.begin(); it != connections.end(); ++it) {
         if (connection == *it) {
+            deleteInput(connection);
             connections.erase(it);
             break;
         }
@@ -143,6 +144,10 @@ void GUI_Node::createConnection(const Connection &new_connection) {
 }
 
 void GUI_Node::setInput(const Connection& connection) {
+    // nop
+}
+
+void GUI_Node::deleteInput(const Connection& connection) {
     // nop
 }
 

@@ -16,3 +16,11 @@ void JackNode::setInput(const Connection& connection) {
     printf("Debug: input set into %s, in = %p\n", this->title, pb);
     jack.setInput(pb);
 }
+
+void JackNode::deleteInput(const Connection& connection) {
+    assert(connection.inputNode == this);
+    jack.assertInputBlock(connection.outputNode->getProcessingBlock());
+
+    printf("Debug: remove input from %s\n", this->title);
+    jack.setInput(nullptr);
+}

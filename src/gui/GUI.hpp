@@ -68,6 +68,7 @@ struct GUI_Node {
     void createConnection(const Connection& new_connection);
 
     virtual void setInput(const Connection& connection);
+    virtual void deleteInput(const Connection& connection);
     virtual void content();
 
     virtual ProcessingBlock*    getProcessingBlock();
