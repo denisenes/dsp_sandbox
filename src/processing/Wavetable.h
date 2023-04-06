@@ -22,6 +22,10 @@ class Wavetable {
 
         sample_t getValue(sample_t frequency);
 
+        void setWaveform(Waveform waveform) {
+            initTable(waveform);
+        }
+
     private:
         sample_t readPtr;
 
