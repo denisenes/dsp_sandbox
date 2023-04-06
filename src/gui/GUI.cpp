@@ -1,5 +1,6 @@
 #include "GUI.hpp"
 
+#include "MidiSrcNode.hpp"
 #include "OscNode.hpp"
 #include "JackNode.hpp"
 
@@ -10,6 +11,7 @@ std::map<std::string, GUI_Node*(*)()> available_nodes {
     }, {
         {"out", ProcessingSignal}
     }); }},
+    {"MIDI Source", []() -> GUI_Node* { return new MidiSrcNode(); }},
 };
 std::vector<GUI_Node*> nodes;
 

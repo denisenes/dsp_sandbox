@@ -11,6 +11,7 @@ class OscNode : public GUI_Node {
         ~OscNode();
 
         void setInput(const Connection& connection);
+        void deleteInput(const Connection& connection);
         void content();
 
         ProcessingBlock*    getProcessingBlock() { return &osc; }
