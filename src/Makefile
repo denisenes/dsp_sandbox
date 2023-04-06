@@ -6,6 +6,7 @@
 EXE = main
 IMGUI_DIR = ../libs/imgui/
 IMNODES_DIR = ../libs/ImNodes/
+IMGUI_KNOBS_DIR = ../libs/imgui-knobs/
 
 # Application sources
 SOURCES = main. JackSetup.cpp SDLSetup.cpp
@@ -24,11 +25,14 @@ SOURCES += $(IMGUI_DIR)/backends/imgui_impl_sdl2.cpp $(IMGUI_DIR)/backends/imgui
 # ImNodes sources
 SOURCES += $(IMNODES_DIR)/ImNodes.cpp $(IMNODES_DIR)/ImNodesEz.cpp
 
+# Imgui-Knobs sources
+SOURCES += $(IMGUI_KNOBS_DIR)/imgui-knobs.cpp
+
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
-CXXFLAGS = -std=c++11 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(IMNODES_DIR) -Igui -Iprocessing
+CXXFLAGS = -std=c++11 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(IMNODES_DIR) -I$(IMGUI_KNOBS_DIR) -Igui -Iprocessing
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
 
@@ -54,6 +58,9 @@ endif
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:$(IMNODES_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:$(IMGUI_KNOBS_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:$(IMGUI_DIR)/%.cpp

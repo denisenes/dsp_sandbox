@@ -32,7 +32,7 @@ class Oscillator : public ProcessingBlock {
         ControlSignalBlock* frequencyInput;
 
         sample_t getInputFrequency() {
-            return frequencyInput == nullptr ? Utils::noteToFreq(50) : frequencyInput->out();
+            return frequencyInput == nullptr ? 0.f : frequencyInput->out();
         }
 
     protected:

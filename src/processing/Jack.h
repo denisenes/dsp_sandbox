@@ -43,6 +43,14 @@ class Jack {
             return note;
         }
 
+        sample_t* getGain() {
+            return &gain;
+        }
+
+        sample_t getPickedSignalValue() {
+            return pickedSignalValue;
+        }
+
         void portRegister(const char * portName, const char * portType, unsigned long flags, unsigned long bufferSize);
 
         void activate();
@@ -59,6 +67,9 @@ class Jack {
 
         jack_port_t* input_port;
         jack_port_t*  output_port;
+
+        sample_t gain;
+        sample_t pickedSignalValue;
 
         static sample_t note_on;
         static unsigned char note;

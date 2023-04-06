@@ -65,6 +65,7 @@ int Jack::process(jack_nframes_t nframes, void* arg) {
     jack_midi_event_t in_event;
 	jack_nframes_t event_index = 0;
 	jack_nframes_t event_count = jack_midi_get_event_count(port_buf);
+    sample_t maxSignalValue = 0.f;
 
     if(event_count > 1) {
 		printf(" midisine: have %d events\n", event_count);
@@ -93,10 +94,13 @@ int Jack::process(jack_nframes_t nframes, void* arg) {
 		}
 
         ProcessingBlock * in = instance.input;
+ 
+        out[i] = in == nullptr ? 0.f : Utils::dbToLinear(Jack::instance.gain) * in->out();
+        maxSignalValue = std::max(out[i], maxSignalValue);
 
-        out[i] = in == nullptr ? 0.f : in->out();
         GlobalClock::tick();
     }
+    instance.pickedSignalValue = maxSignalValue;
 
     return 0;
 }

@@ -5,6 +5,7 @@
 #include "GlobalDecls.h"
 
 #define FREQS_NUM 128
+#define EPS 0.0000001f
 
 class Utils {
     public:
@@ -23,6 +24,14 @@ class Utils {
         }
 
         static sample_t frequencies[FREQS_NUM];
+
+        static sample_t dbToLinear(sample_t value) {
+            return pow(10.f, value / 20.f);
+        }
+
+        static sample_t linearToDb(sample_t value) {
+            return 20 * log10(value);
+        }
 };
 
 #endif

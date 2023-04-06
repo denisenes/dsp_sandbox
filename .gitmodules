@@ -4,3 +4,6 @@
 [submodule "libs/ImNodes"]
 	path = libs/ImNodes
 	url = https://github.com/rokups/ImNodes
+[submodule "libs/imgui-knobs"]
+	path = libs/imgui-knobs
+	url = https://github.com/altschuler/imgui-knobs
