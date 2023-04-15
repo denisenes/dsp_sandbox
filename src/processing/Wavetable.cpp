@@ -76,7 +76,7 @@ inline void Wavetable::initSaw() {
         int bound = tableLength;
 
         for (int i = 0; i < bound; i++) {
-            table[i] = -(1.0f / bound) * i + 1.0f;
+            table[i] = -(2.0f / bound) * i + 1.0f;
         }
     #endif
 }

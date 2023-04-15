@@ -14,7 +14,7 @@ std::map<std::string, Waveform> availableWaveforms {
 OscNode::OscNode() : GUI_Node("Oscillator", {{"freq", ControlSignal}}, {{"out", ProcessingSignal}}),
     osc(*new Oscillator(DEFAULT_WAVEFORM, nullptr, 0.f)) {
         printf("Debug: OscNode created [%p]\n", this);
-    }
+}
 
 OscNode::~OscNode() {
     delete &osc;
@@ -41,8 +41,6 @@ void OscNode::deleteInput(const Connection& connection) {
 }
 
 void OscNode::content() {
-    static int current_waveform_idx = 0;
-    static int flags = 0;
     const char* combo_preview_value = waveNames[current_waveform_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
     
     ImGui::PushItemWidth(100.f); 
@@ -64,4 +62,11 @@ void OscNode::content() {
         osc.setWaveform(current_waveform);
         printf("DEBUG: waveform set from %d to %d\n", osc.getWaveform(), current_waveform);
     }
+
+    ImGuiKnobs::Knob("detune", &detuneParam, 0.f, 50.f, 0.2f, "%.f", ImGuiKnobVariant_Wiper, 30.f);
+    osc.setDetune(detuneParam);
+
+    ImGui::SameLine(0.f);
+
+    ImGuiKnobs::Knob("pitch", &pitchParam, -12.f, 12.f, 0.2f, "%.1f", ImGuiKnobVariant_Wiper, 30.f);
 }

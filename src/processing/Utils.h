@@ -5,7 +5,7 @@
 #include "GlobalDecls.h"
 
 #define FREQS_NUM 128
-#define EPS 0.0000001f
+#define EPS 0.000000001f
 
 class Utils {
     public:

@@ -25,6 +25,7 @@ class Oscillator : public ProcessingBlock {
 
         void setWaveform(Waveform w);
         Waveform getWaveform();
+        void setDetune(sample_t param);
 
     private:
         Waveform currentWaveform;

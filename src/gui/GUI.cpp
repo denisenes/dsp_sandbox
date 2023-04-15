@@ -3,14 +3,11 @@
 #include "MidiSrcNode.hpp"
 #include "OscNode.hpp"
 #include "JackNode.hpp"
+#include "AdderNode.hpp"
 
 std::map<std::string, GUI_Node*(*)()> available_nodes {
     {"Oscillator", []() -> GUI_Node* { return new OscNode(); }},
-    {"Adder", []() -> GUI_Node* { return new GUI_Node("Adder", {
-        {"in1", ProcessingSignal}, {"in2", ProcessingSignal}                                       // Input slots
-    }, {
-        {"out", ProcessingSignal}
-    }); }},
+    {"Adder", []() -> GUI_Node* { return new AdderNode(); }},
     {"MIDI Source", []() -> GUI_Node* { return new MidiSrcNode(); }},
 };
 std::vector<GUI_Node*> nodes;
@@ -131,7 +128,10 @@ void ShowMainWindow() {
 void GUI_Node::deleteConnection(const Connection &connection) {
     for (auto it = connections.begin(); it != connections.end(); ++it) {
         if (connection == *it) {
-            deleteInput(connection);
+            if (connection.inputNode == this) {
+                deleteInput(connection);
+            }
+            
             connections.erase(it);
             break;
         }

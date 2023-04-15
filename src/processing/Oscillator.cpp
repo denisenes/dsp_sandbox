@@ -32,3 +32,12 @@ void Oscillator::setWaveform(Waveform w) {
 Waveform Oscillator::getWaveform() {
     return currentWaveform;
 }
+
+void Oscillator::setDetune(sample_t param) {
+    sample_t normalizedDetune = param / Jack::instance.getSampleRate(); 
+
+    if (normalizedDetune != detuneParam) {
+        printf("DEBUG: set detune param, value=%f\n", normalizedDetune);
+        Oscillator::detuneParam = normalizedDetune;
+    }
+}

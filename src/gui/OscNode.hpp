@@ -3,6 +3,8 @@
 #include "GUI.hpp"
 #include "../processing/Oscillator.h"
 
+#include "imgui-knobs.h"
+
 #define DEFAULT_WAVEFORM SIN
 
 class OscNode : public GUI_Node {
@@ -19,4 +21,9 @@ class OscNode : public GUI_Node {
 
     private:
         Oscillator& osc;
+
+        int current_waveform_idx = 0;
+        int flags = 0;
+        sample_t detuneParam;
+        sample_t pitchParam;
 };
