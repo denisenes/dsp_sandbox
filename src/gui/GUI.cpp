@@ -1,6 +1,6 @@
 #include "GUI.hpp"
 
-#include "MidiSrcNode.hpp"
+#include "SourceNode.hpp"
 #include "OscNode.hpp"
 #include "JackNode.hpp"
 #include "AdderNode.hpp"
@@ -8,7 +8,7 @@
 std::map<std::string, GUI_Node*(*)()> available_nodes {
     {"Oscillator", []() -> GUI_Node* { return new OscNode(); }},
     {"Adder", []() -> GUI_Node* { return new AdderNode(); }},
-    {"MIDI Source", []() -> GUI_Node* { return new MidiSrcNode(); }},
+    {"Source", []() -> GUI_Node* { return new SourceNode(MIDI); }},
 };
 std::vector<GUI_Node*> nodes;
 
