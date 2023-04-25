@@ -62,7 +62,8 @@ void SourceNode::content() {
 
     switch (sourceType) {
     case CONST:
-
+        ImGuiKnobs::Knob("freq", &currentFreq, 50.f, 5000.f, 1.f, "%.f", ImGuiKnobVariant_Wiper, 30.f);
+        constBlock.setConstValue(currentFreq);
         break;
     case MIDI:
         // nothing to draw

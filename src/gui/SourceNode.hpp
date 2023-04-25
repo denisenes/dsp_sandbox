@@ -3,6 +3,7 @@
 #include "GUI.hpp"
 #include "MidiSignalBlock.h"
 #include "ConstSignalBlock.h"
+#include "imgui-knobs.h"
 
 enum SourceType {
     MIDI,
@@ -34,6 +35,8 @@ class SourceNode : public GUI_Node {
 
         MidiSignalBlock& midiBlock;
         ConstSignalBlock& constBlock;
+
+        sample_t currentFreq;
 
         void updateSourceType();
 };

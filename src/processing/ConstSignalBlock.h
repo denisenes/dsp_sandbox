@@ -10,6 +10,13 @@ class ConstSignalBlock : public ControlSignalBlock {
             value = v;
         }
 
+        void setConstValue(sample_t v) {
+            if (v != value) {
+                printf("DEBUG: ConstSignalBlock set new frequency [%p]\n", this);
+                value = v;
+            }
+        }
+
     protected:
         sample_t generate() {
             return getConstValue() / Jack::instance.getSampleRate();
@@ -20,9 +27,5 @@ class ConstSignalBlock : public ControlSignalBlock {
 
         sample_t getConstValue() {
             return value;
-        }
-
-        void setConstValue(sample_t v) {
-            value = v;
         }
 };
