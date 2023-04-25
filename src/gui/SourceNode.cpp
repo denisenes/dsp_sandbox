@@ -26,7 +26,17 @@ void SourceNode::setInput(const Connection& connection) {
     GUI_Node::setInput(connection);
 }
 
-const char* types[3] = { "midi", "const", "noise" }; 
+const char* types[3] = { "midi", "const", "noise" };
+
+void SourceNode::updateSourceType() {
+    for (Connection conn : this->connections) {
+        if (conn.outputNode == this && !strcmp(conn.outputSlot, "out")) {
+            printf("TEST\n");
+            GUI_Node * inNode = conn.inputNode;
+            inNode->setInput(conn);
+        }
+    }
+}
 
 void SourceNode::content() {
     const char* type_preview = types[sourceType];
@@ -35,10 +45,16 @@ void SourceNode::content() {
     if (ImGui::BeginCombo("type", type_preview, 0)) {
         for (int n = 0; n < IM_ARRAYSIZE(types); n++) {
             const bool is_selected = (sourceType == n);
-            if (ImGui::Selectable(types[n], is_selected))
+
+            if (ImGui::Selectable(types[n], is_selected)) {
                 sourceType = static_cast<SourceType>(n);
-            if (is_selected)
+                updateSourceType();
+                printf("Debug: SourceNode source type changed [%p] to %d\n", this, sourceType);
+            }
+
+            if (is_selected) {
                 ImGui::SetItemDefaultFocus();
+            }
         }
         ImGui::EndCombo();
     }

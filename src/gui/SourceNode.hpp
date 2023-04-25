@@ -34,4 +34,6 @@ class SourceNode : public GUI_Node {
 
         MidiSignalBlock& midiBlock;
         ConstSignalBlock& constBlock;
+
+        void updateSourceType();
 };
