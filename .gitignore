@@ -4,4 +4,5 @@ src/*.o
 
 main
 .gdb_history
+.gdbinit
 imgui.ini
