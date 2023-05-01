@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include "GlobalDecls.h"
+#include "Jack.h"
 
 #define FREQS_NUM 128
 #define EPS 0.000000001f
@@ -31,6 +32,10 @@ class Utils {
 
         static sample_t linearToDb(sample_t value) {
             return 20 * log10(value);
+        }
+
+        static jack_nframes_t getSampleRate() {
+            return Jack::instance.getSampleRate();
         }
 };
 

@@ -4,11 +4,13 @@
 #include "OscNode.hpp"
 #include "JackNode.hpp"
 #include "AdderNode.hpp"
+#include "Oscilloscope.hpp"
 
 std::map<std::string, GUI_Node*(*)()> available_nodes {
     {"Oscillator", []() -> GUI_Node* { return new OscNode(); }},
     {"Adder", []() -> GUI_Node* { return new AdderNode(); }},
     {"Source", []() -> GUI_Node* { return new SourceNode(MIDI); }},
+    {"Oscilloscope", []() -> GUI_Node* { return new Oscilloscope(); }}
 };
 std::vector<GUI_Node*> nodes;
 

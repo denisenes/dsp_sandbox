@@ -13,10 +13,11 @@ SOURCES = main. JackSetup.cpp SDLSetup.cpp
 
 # Processing logic sources
 SOURCES += processing/GlobalClock.cpp processing/Jack.cpp processing/Oscillator.cpp processing/StepSequencer.cpp
-SOURCES += processing/Utils.cpp processing/Wavetable.cpp
+SOURCES += processing/Utils.cpp processing/Wavetable.cpp processing/OscilloscopeBlock.cpp
 
 # GUI sources
 SOURCES += gui/GUI.cpp gui/JackNode.cpp gui/OscNode.cpp gui/SourceNode.cpp gui/AdderNode.cpp
+SOURCES += gui/Oscilloscope.cpp
 
 # ImGui sources
 SOURCES += $(IMGUI_DIR)/imgui.cpp  $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
