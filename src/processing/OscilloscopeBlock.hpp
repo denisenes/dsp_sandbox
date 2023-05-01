@@ -1,5 +1,7 @@
 #pragma once
 
+#include <atomic>
+
 #include "ProcessingBlock.h"
 #include "Jack.h"
 #include "GlobalDecls.h"
@@ -7,7 +9,7 @@
 
 #include "Utils.h"
 
-#define BUFF_LEN 1024
+#define BUFF_LEN 200
 
 class OscilloscopeBlock : public ProcessingBlock {
     public:
@@ -33,10 +35,14 @@ class OscilloscopeBlock : public ProcessingBlock {
         sample_t process();
 
     private:
-        int currentBuffer = 0;
+        std::atomic<uint8_t> currentBuffer {0};
+        std::atomic<bool> produced {0};
+
         sample_t buffers[2][BUFF_LEN];
 
         sample_t targetFrequency;
         smp_time_t sampleStepDuration;
         smp_time_t startTime;
+
+        void swapBuffers();
 };

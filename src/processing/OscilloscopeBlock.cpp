@@ -1,11 +1,17 @@
 #include "OscilloscopeBlock.hpp"
 
-sample_t* OscilloscopeBlock::getBuffer() {
-    return buffers[currentBuffer];
+void OscilloscopeBlock::swapBuffers() {
+    currentBuffer.store(currentBuffer ^ 0x1);
 }
 
-/// @brief 
-/// @return 
+sample_t* OscilloscopeBlock::getBuffer() {
+    if (produced.load()) {
+        swapBuffers();
+        produced.store(false);
+    }
+    return buffers[currentBuffer.load() ^ 0x1];
+}
+
 sample_t OscilloscopeBlock::process() {
     static int current_buff_elem = 0;
     smp_time_t current_time = GlobalClock::getGlobalTime();
@@ -20,11 +26,14 @@ sample_t OscilloscopeBlock::process() {
 
     if (startTime + sampleStepDuration <= current_time) {
         startTime = current_time;
-        buffers[currentBuffer][current_buff_elem++] = inputWaveSample;
 
-        if (current_buff_elem == BUFF_LEN) {
-            currentBuffer ^= 0x1;
-            current_buff_elem = 0;
+        if (!produced.load()) {
+            buffers[currentBuffer][current_buff_elem++] = inputWaveSample;
+
+            if (current_buff_elem == BUFF_LEN) {
+                produced.store(true);
+                current_buff_elem = 0;
+            }
         }
     }
 
